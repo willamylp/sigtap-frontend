@@ -1,0 +1,3257 @@
+openapi: 3.0.3
+info:
+  title: SIGTAP API
+  version: 1.0.0
+  description: "API REST de **consulta pública** (somente leitura) às tabelas do **SIGTAP**\\.
+    \ \n\nOs endpoints são organizados por contexto: \n\n> hierarquia (**grupos**
+    → **subgrupos** → **formas de organização** → **procedimentos**), dimensões versionadas
+    por competência e dicionários globais.\n\n> Os recursos versionados aceitam o
+    parâmetro `competencia` (`AAAAMM`). Sem ele, considera-se a competência vigente.\n"
+paths:
+  /api/v1/sigtap/cids/:
+    get:
+      operationId: cids_list
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - CIDs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCidList'
+          description: ''
+  /api/v1/sigtap/cids/{co_cid}/:
+    get:
+      operationId: cids_retrieve
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - in: path
+        name: co_cid
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - CIDs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cid'
+          description: ''
+  /api/v1/sigtap/cids/{co_cid}/procedimentos/:
+    get:
+      operationId: cids_procedimentos_list
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - in: path
+        name: co_cid
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - CIDs
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProcedimentoListList'
+          description: ''
+  /api/v1/sigtap/competencias/:
+    get:
+      operationId: competencias_list
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Competências
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCompetenciaList'
+          description: ''
+  /api/v1/sigtap/competencias/{codigo}/:
+    get:
+      operationId: competencias_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: codigo
+        schema:
+          type: string
+          pattern: ^[0-9]{6}$
+        required: true
+      tags:
+      - Competências
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competencia'
+          description: ''
+  /api/v1/sigtap/componentes-rede/:
+    get:
+      operationId: componentes_rede_list
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Componentes de Rede
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedComponenteRedeList'
+          description: ''
+  /api/v1/sigtap/componentes-rede/{co_componente_rede}/:
+    get:
+      operationId: componentes_rede_retrieve
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - in: path
+        name: co_componente_rede
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Componentes de Rede
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComponenteRede'
+          description: ''
+  /api/v1/sigtap/detalhes/:
+    get:
+      operationId: detalhes_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Detalhes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDetalheList'
+          description: ''
+  /api/v1/sigtap/detalhes/{co_detalhe}/:
+    get:
+      operationId: detalhes_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_detalhe
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Detalhes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detalhe'
+          description: ''
+  /api/v1/sigtap/financiamentos/:
+    get:
+      operationId: financiamentos_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Financiamentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFinanciamentoList'
+          description: ''
+  /api/v1/sigtap/financiamentos/{co_financiamento}/:
+    get:
+      operationId: financiamentos_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_financiamento
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Financiamentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Financiamento'
+          description: ''
+  /api/v1/sigtap/formas-organizacao/:
+    get:
+      operationId: formas_organizacao_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: query
+        name: co_forma_organizacao
+        schema:
+          type: string
+      - in: query
+        name: co_grupo
+        schema:
+          type: string
+      - in: query
+        name: co_sub_grupo
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Formas de Organização
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFormaOrganizacaoList'
+          description: ''
+  /api/v1/sigtap/formas-organizacao/{id}/:
+    get:
+      operationId: formas_organizacao_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Formas de Organização
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormaOrganizacao'
+          description: ''
+  /api/v1/sigtap/grupos/:
+    get:
+      operationId: grupos_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Grupos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGrupoList'
+          description: ''
+  /api/v1/sigtap/grupos-habilitacao/:
+    get:
+      operationId: grupos_habilitacao_list
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Grupos de Habilitação
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGrupoHabilitacaoList'
+          description: ''
+  /api/v1/sigtap/grupos-habilitacao/{nu_grupo_habilitacao}/:
+    get:
+      operationId: grupos_habilitacao_retrieve
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - in: path
+        name: nu_grupo_habilitacao
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Grupos de Habilitação
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrupoHabilitacao'
+          description: ''
+  /api/v1/sigtap/grupos/{co_grupo}/:
+    get:
+      operationId: grupos_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_grupo
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Grupos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grupo'
+          description: ''
+  /api/v1/sigtap/habilitacoes/:
+    get:
+      operationId: habilitacoes_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Habilitações
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHabilitacaoList'
+          description: ''
+  /api/v1/sigtap/habilitacoes/{co_habilitacao}/:
+    get:
+      operationId: habilitacoes_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_habilitacao
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Habilitações
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habilitacao'
+          description: ''
+  /api/v1/sigtap/habilitacoes/{co_habilitacao}/procedimentos/:
+    get:
+      operationId: habilitacoes_procedimentos_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_habilitacao
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Habilitações
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProcedimentoListList'
+          description: ''
+  /api/v1/sigtap/modalidades/:
+    get:
+      operationId: modalidades_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Modalidades
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedModalidadeList'
+          description: ''
+  /api/v1/sigtap/modalidades/{co_modalidade}/:
+    get:
+      operationId: modalidades_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_modalidade
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Modalidades
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Modalidade'
+          description: ''
+  /api/v1/sigtap/modalidades/{co_modalidade}/procedimentos/:
+    get:
+      operationId: modalidades_procedimentos_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_modalidade
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Modalidades
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProcedimentoListList'
+          description: ''
+  /api/v1/sigtap/ocupacoes/:
+    get:
+      operationId: ocupacoes_list
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Ocupações
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOcupacaoList'
+          description: ''
+  /api/v1/sigtap/ocupacoes/{co_ocupacao}/:
+    get:
+      operationId: ocupacoes_retrieve
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - in: path
+        name: co_ocupacao
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Ocupações
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ocupacao'
+          description: ''
+  /api/v1/sigtap/ocupacoes/{co_ocupacao}/procedimentos/:
+    get:
+      operationId: ocupacoes_procedimentos_list
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - in: path
+        name: co_ocupacao
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Ocupações
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProcedimentoListList'
+          description: ''
+  /api/v1/sigtap/procedimentos/:
+    get:
+      operationId: procedimentos_list
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: query
+        name: complexidade
+        schema:
+          type: string
+      - in: query
+        name: financiamento
+        schema:
+          type: string
+      - in: query
+        name: forma_organizacao
+        schema:
+          type: string
+      - in: query
+        name: grupo
+        schema:
+          type: string
+      - in: query
+        name: modalidade
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      - in: query
+        name: sexo
+        schema:
+          type: string
+      - in: query
+        name: sub_grupo
+        schema:
+          type: string
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProcedimentoListList'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/:
+    get:
+      operationId: procedimentos_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoDetail'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/cids/:
+    get:
+      operationId: procedimentos_cids_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoCid'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/compativeis/:
+    get:
+      operationId: procedimentos_compativeis_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoCompativel'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/descricao/:
+    get:
+      operationId: procedimentos_descricao_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoDetail'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/detalhes/:
+    get:
+      operationId: procedimentos_detalhes_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoDetalhe'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/habilitacoes/:
+    get:
+      operationId: procedimentos_habilitacoes_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoHabilitacao'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/incrementos/:
+    get:
+      operationId: procedimentos_incrementos_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoIncremento'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/leitos/:
+    get:
+      operationId: procedimentos_leitos_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoLeito'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/modalidades/:
+    get:
+      operationId: procedimentos_modalidades_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoModalidade'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/ocupacoes/:
+    get:
+      operationId: procedimentos_ocupacoes_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoOcupacao'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/origem/:
+    get:
+      operationId: procedimentos_origem_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoOrigem'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/redes/:
+    get:
+      operationId: procedimentos_redes_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoCompRede'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/registros/:
+    get:
+      operationId: procedimentos_registros_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoRegistro'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/regras-condicionadas/:
+    get:
+      operationId: procedimentos_regras_condicionadas_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoRegraCond'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/renases/:
+    get:
+      operationId: procedimentos_renases_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoRenases'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/servicos/:
+    get:
+      operationId: procedimentos_servicos_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoServico'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/sia-sih/:
+    get:
+      operationId: procedimentos_sia_sih_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoSiaSih'
+          description: ''
+  /api/v1/sigtap/procedimentos/{co_procedimento}/tuss/:
+    get:
+      operationId: procedimentos_tuss_retrieve
+      description: 'Base somente-leitura: paginação, filtros e resolução de competência.'
+      parameters:
+      - in: path
+        name: co_procedimento
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - Procedimentos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcedimentoTuss'
+          description: ''
+  /api/v1/sigtap/redes-atencao/:
+    get:
+      operationId: redes_atencao_list
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Redes de Atenção
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRedeAtencaoList'
+          description: ''
+  /api/v1/sigtap/redes-atencao/{co_rede_atencao}/:
+    get:
+      operationId: redes_atencao_retrieve
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - in: path
+        name: co_rede_atencao
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Redes de Atenção
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedeAtencao'
+          description: ''
+  /api/v1/sigtap/registros/:
+    get:
+      operationId: registros_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Registros
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRegistroList'
+          description: ''
+  /api/v1/sigtap/registros/{co_registro}/:
+    get:
+      operationId: registros_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_registro
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Registros
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registro'
+          description: ''
+  /api/v1/sigtap/regras-condicionadas/:
+    get:
+      operationId: regras_condicionadas_list
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Regras Condicionadas
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRegraCondicionadaList'
+          description: ''
+  /api/v1/sigtap/regras-condicionadas/{co_regra_condicionada}/:
+    get:
+      operationId: regras_condicionadas_retrieve
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - in: path
+        name: co_regra_condicionada
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Regras Condicionadas
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegraCondicionada'
+          description: ''
+  /api/v1/sigtap/renases/:
+    get:
+      operationId: renases_list
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - RENASES
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRenasesList'
+          description: ''
+  /api/v1/sigtap/renases/{co_renases}/:
+    get:
+      operationId: renases_retrieve
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - in: path
+        name: co_renases
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - RENASES
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Renases'
+          description: ''
+  /api/v1/sigtap/rubricas/:
+    get:
+      operationId: rubricas_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Rubricas
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRubricaList'
+          description: ''
+  /api/v1/sigtap/rubricas/{co_rubrica}/:
+    get:
+      operationId: rubricas_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_rubrica
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Rubricas
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rubrica'
+          description: ''
+  /api/v1/sigtap/servico-classificacoes/:
+    get:
+      operationId: servico_classificacoes_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: query
+        name: co_classificacao
+        schema:
+          type: string
+      - in: query
+        name: co_servico
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Serviços / Classificações
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedServicoClassificacaoList'
+          description: ''
+  /api/v1/sigtap/servico-classificacoes/{id}/:
+    get:
+      operationId: servico_classificacoes_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Serviços / Classificações
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicoClassificacao'
+          description: ''
+  /api/v1/sigtap/servicos/:
+    get:
+      operationId: servicos_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Serviços
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedServicoList'
+          description: ''
+  /api/v1/sigtap/servicos/{co_servico}/:
+    get:
+      operationId: servicos_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_servico
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Serviços
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Servico'
+          description: ''
+  /api/v1/sigtap/servicos/{co_servico}/procedimentos/:
+    get:
+      operationId: servicos_procedimentos_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_servico
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Serviços
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProcedimentoListList'
+          description: ''
+  /api/v1/sigtap/sia-sih/:
+    get:
+      operationId: sia_sih_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: query
+        name: co_procedimento_sia_sih
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      - in: query
+        name: tp_procedimento
+        schema:
+          type: string
+      tags:
+      - SIA/SIH
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSiaSihList'
+          description: ''
+  /api/v1/sigtap/sia-sih/{id}/:
+    get:
+      operationId: sia_sih_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - SIA/SIH
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiaSih'
+          description: ''
+  /api/v1/sigtap/subgrupos/:
+    get:
+      operationId: subgrupos_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: query
+        name: co_grupo
+        schema:
+          type: string
+      - in: query
+        name: co_sub_grupo
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Subgrupos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubGrupoList'
+          description: ''
+  /api/v1/sigtap/subgrupos/{id}/:
+    get:
+      operationId: subgrupos_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Subgrupos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubGrupo'
+          description: ''
+  /api/v1/sigtap/tipos-leito/:
+    get:
+      operationId: tipos_leito_list
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - Tipos de Leito
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTipoLeitoList'
+          description: ''
+  /api/v1/sigtap/tipos-leito/{co_tipo_leito}/:
+    get:
+      operationId: tipos_leito_retrieve
+      description: Dicionário/dimensão versionado por competência (classe A).
+      parameters:
+      - in: path
+        name: co_tipo_leito
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - Tipos de Leito
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoLeito'
+          description: ''
+  /api/v1/sigtap/tuss/:
+    get:
+      operationId: tuss_list
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Qual campo usar ao ordenar os resultados.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Um número de página dentro do conjunto de resultados paginado.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Número de resultados a serem retornados por página.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Um termo de busca.
+        schema:
+          type: string
+      tags:
+      - TUSS
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTussList'
+          description: ''
+  /api/v1/sigtap/tuss/{co_tuss}/:
+    get:
+      operationId: tuss_retrieve
+      description: Dicionário sem competência (classe C).
+      parameters:
+      - in: path
+        name: co_tuss
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - TUSS
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tuss'
+          description: ''
+components:
+  schemas:
+    Cid:
+      type: object
+      properties:
+        co_cid:
+          type: string
+          title: Código CID
+          maxLength: 4
+        no_cid:
+          type: string
+          title: Nome
+          maxLength: 100
+        tp_agravo:
+          type: string
+          title: Tipo de agravo
+          maxLength: 1
+        tp_sexo:
+          type: string
+          title: Sexo
+          maxLength: 1
+        tp_estadio:
+          type: string
+          title: Estádio
+          maxLength: 1
+        vl_campos_irradiados:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+          title: Campos irradiados
+      required:
+      - co_cid
+    Competencia:
+      type: object
+      properties:
+        codigo:
+          type: string
+          title: Código (AAAAMM)
+          maxLength: 6
+        vigente:
+          type: boolean
+        importado_em:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - codigo
+      - importado_em
+    ComponenteRede:
+      type: object
+      properties:
+        co_componente_rede:
+          type: string
+          title: Código
+          maxLength: 10
+        no_componente_rede:
+          type: string
+          title: Nome
+          maxLength: 150
+        co_rede_atencao:
+          type: string
+          readOnly: true
+      required:
+      - co_componente_rede
+      - co_rede_atencao
+    Detalhe:
+      type: object
+      properties:
+        co_detalhe:
+          type: string
+          title: Código
+          maxLength: 3
+        no_detalhe:
+          type: string
+          title: Nome
+          maxLength: 100
+      required:
+      - co_detalhe
+    Financiamento:
+      type: object
+      properties:
+        co_financiamento:
+          type: string
+          title: Código
+          maxLength: 2
+        no_financiamento:
+          type: string
+          title: Nome
+          maxLength: 100
+      required:
+      - co_financiamento
+    FormaOrganizacao:
+      type: object
+      properties:
+        co_grupo:
+          type: string
+          title: Código do grupo
+          maxLength: 2
+        co_sub_grupo:
+          type: string
+          title: Código do subgrupo
+          maxLength: 2
+        co_forma_organizacao:
+          type: string
+          title: Código
+          maxLength: 2
+        no_forma_organizacao:
+          type: string
+          title: Nome
+          maxLength: 100
+      required:
+      - co_forma_organizacao
+      - co_grupo
+      - co_sub_grupo
+    Grupo:
+      type: object
+      properties:
+        co_grupo:
+          type: string
+          title: Código
+          maxLength: 2
+        no_grupo:
+          type: string
+          title: Nome
+          maxLength: 100
+      required:
+      - co_grupo
+    GrupoHabilitacao:
+      type: object
+      properties:
+        nu_grupo_habilitacao:
+          type: string
+          title: Número do grupo de habilitação
+          maxLength: 4
+        no_grupo_habilitacao:
+          type: string
+          title: Nome
+          maxLength: 20
+        ds_grupo_habilitacao:
+          type: string
+          title: Descrição
+          maxLength: 250
+      required:
+      - nu_grupo_habilitacao
+    Habilitacao:
+      type: object
+      properties:
+        co_habilitacao:
+          type: string
+          title: Código
+          maxLength: 4
+        no_habilitacao:
+          type: string
+          title: Nome
+          maxLength: 150
+      required:
+      - co_habilitacao
+    Modalidade:
+      type: object
+      properties:
+        co_modalidade:
+          type: string
+          title: Código
+          maxLength: 2
+        no_modalidade:
+          type: string
+          title: Nome
+          maxLength: 100
+      required:
+      - co_modalidade
+    Ocupacao:
+      type: object
+      properties:
+        co_ocupacao:
+          type: string
+          title: Código CBO
+          maxLength: 6
+        no_ocupacao:
+          type: string
+          title: Nome
+          maxLength: 150
+      required:
+      - co_ocupacao
+    PaginatedCidList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cid'
+    PaginatedCompetenciaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Competencia'
+    PaginatedComponenteRedeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComponenteRede'
+    PaginatedDetalheList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detalhe'
+    PaginatedFinanciamentoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Financiamento'
+    PaginatedFormaOrganizacaoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormaOrganizacao'
+    PaginatedGrupoHabilitacaoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrupoHabilitacao'
+    PaginatedGrupoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Grupo'
+    PaginatedHabilitacaoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Habilitacao'
+    PaginatedModalidadeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Modalidade'
+    PaginatedOcupacaoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ocupacao'
+    PaginatedProcedimentoListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProcedimentoList'
+    PaginatedRedeAtencaoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedeAtencao'
+    PaginatedRegistroList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Registro'
+    PaginatedRegraCondicionadaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegraCondicionada'
+    PaginatedRenasesList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Renases'
+    PaginatedRubricaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Rubrica'
+    PaginatedServicoClassificacaoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServicoClassificacao'
+    PaginatedServicoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Servico'
+    PaginatedSiaSihList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SiaSih'
+    PaginatedSubGrupoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubGrupo'
+    PaginatedTipoLeitoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TipoLeito'
+    PaginatedTussList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tuss'
+    ProcedimentoCid:
+      type: object
+      properties:
+        cid:
+          allOf:
+          - $ref: '#/components/schemas/Cid'
+          readOnly: true
+        st_principal:
+          type: boolean
+          title: CID principal
+      required:
+      - cid
+    ProcedimentoCompRede:
+      type: object
+      properties:
+        componente_rede:
+          allOf:
+          - $ref: '#/components/schemas/ComponenteRede'
+          readOnly: true
+      required:
+      - componente_rede
+    ProcedimentoCompativel:
+      type: object
+      properties:
+        procedimento_compativel:
+          allOf:
+          - $ref: '#/components/schemas/ProcedimentoMini'
+          readOnly: true
+        registro_principal:
+          type: string
+          readOnly: true
+        registro_compativel:
+          type: string
+          readOnly: true
+        tp_compatibilidade:
+          type: string
+          title: Tipo de compatibilidade
+          maxLength: 1
+        qt_permitida:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Quantidade permitida
+      required:
+      - procedimento_compativel
+      - registro_compativel
+      - registro_principal
+    ProcedimentoDetail:
+      type: object
+      properties:
+        co_procedimento:
+          type: string
+          title: Código
+          maxLength: 10
+        no_procedimento:
+          type: string
+          title: Nome
+          maxLength: 250
+        tp_complexidade:
+          type: string
+          title: Complexidade
+          maxLength: 1
+        tp_sexo:
+          type: string
+          title: Sexo
+          maxLength: 1
+        qt_maxima_execucao:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Qtd. máxima de execução
+        qt_dias_permanencia:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Dias de permanência
+        qt_pontos:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Pontos
+        vl_idade_minima:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Idade mínima (meses)
+        vl_idade_maxima:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Idade máxima (meses)
+        vl_sh:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Valor SH
+        vl_sa:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Valor SA
+        vl_sp:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Valor SP
+        qt_tempo_permanencia:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Tempo de permanência
+        co_grupo:
+          type: string
+          title: Código do grupo
+          maxLength: 2
+        co_sub_grupo:
+          type: string
+          title: Código do subgrupo
+          maxLength: 2
+        co_forma_organizacao:
+          type: string
+          title: Código da forma de organização
+          maxLength: 2
+        financiamento:
+          allOf:
+          - $ref: '#/components/schemas/Financiamento'
+          readOnly: true
+        rubrica:
+          allOf:
+          - $ref: '#/components/schemas/Rubrica'
+          readOnly: true
+        forma_organizacao:
+          allOf:
+          - $ref: '#/components/schemas/FormaOrganizacao'
+          readOnly: true
+        descricao:
+          type: string
+          readOnly: true
+        competencia:
+          type: string
+          readOnly: true
+      required:
+      - co_procedimento
+      - competencia
+      - descricao
+      - financiamento
+      - forma_organizacao
+      - rubrica
+    ProcedimentoDetalhe:
+      type: object
+      properties:
+        detalhe:
+          allOf:
+          - $ref: '#/components/schemas/Detalhe'
+          readOnly: true
+      required:
+      - detalhe
+    ProcedimentoHabilitacao:
+      type: object
+      properties:
+        habilitacao:
+          allOf:
+          - $ref: '#/components/schemas/Habilitacao'
+          readOnly: true
+        nu_grupo_habilitacao:
+          type: string
+          title: Nº grupo de habilitação
+          maxLength: 4
+        grupo_habilitacao:
+          allOf:
+          - $ref: '#/components/schemas/GrupoHabilitacao'
+          readOnly: true
+      required:
+      - grupo_habilitacao
+      - habilitacao
+    ProcedimentoIncremento:
+      type: object
+      properties:
+        habilitacao:
+          allOf:
+          - $ref: '#/components/schemas/Habilitacao'
+          readOnly: true
+        vl_percentual_sh:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+          title: Percentual SH
+        vl_percentual_sa:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+          title: Percentual SA
+        vl_percentual_sp:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+          title: Percentual SP
+      required:
+      - habilitacao
+    ProcedimentoLeito:
+      type: object
+      properties:
+        tipo_leito:
+          allOf:
+          - $ref: '#/components/schemas/TipoLeito'
+          readOnly: true
+      required:
+      - tipo_leito
+    ProcedimentoList:
+      type: object
+      properties:
+        co_procedimento:
+          type: string
+          title: Código
+          maxLength: 10
+        no_procedimento:
+          type: string
+          title: Nome
+          maxLength: 250
+        tp_complexidade:
+          type: string
+          title: Complexidade
+          maxLength: 1
+        tp_sexo:
+          type: string
+          title: Sexo
+          maxLength: 1
+        co_grupo:
+          type: string
+          title: Código do grupo
+          maxLength: 2
+        co_sub_grupo:
+          type: string
+          title: Código do subgrupo
+          maxLength: 2
+        co_forma_organizacao:
+          type: string
+          title: Código da forma de organização
+          maxLength: 2
+        financiamento:
+          type: string
+          readOnly: true
+        vl_sh:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Valor SH
+        vl_sa:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Valor SA
+        vl_sp:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Valor SP
+        competencia:
+          type: string
+          readOnly: true
+      required:
+      - co_procedimento
+      - competencia
+      - financiamento
+    ProcedimentoMini:
+      type: object
+      properties:
+        co_procedimento:
+          type: string
+          title: Código
+          maxLength: 10
+        no_procedimento:
+          type: string
+          title: Nome
+          maxLength: 250
+      required:
+      - co_procedimento
+    ProcedimentoModalidade:
+      type: object
+      properties:
+        modalidade:
+          allOf:
+          - $ref: '#/components/schemas/Modalidade'
+          readOnly: true
+      required:
+      - modalidade
+    ProcedimentoOcupacao:
+      type: object
+      properties:
+        ocupacao:
+          allOf:
+          - $ref: '#/components/schemas/Ocupacao'
+          readOnly: true
+      required:
+      - ocupacao
+    ProcedimentoOrigem:
+      type: object
+      properties:
+        procedimento_origem:
+          allOf:
+          - $ref: '#/components/schemas/ProcedimentoMini'
+          readOnly: true
+      required:
+      - procedimento_origem
+    ProcedimentoRegistro:
+      type: object
+      properties:
+        registro:
+          allOf:
+          - $ref: '#/components/schemas/Registro'
+          readOnly: true
+      required:
+      - registro
+    ProcedimentoRegraCond:
+      type: object
+      properties:
+        regra_condicionada:
+          allOf:
+          - $ref: '#/components/schemas/RegraCondicionada'
+          readOnly: true
+      required:
+      - regra_condicionada
+    ProcedimentoRenases:
+      type: object
+      properties:
+        renases:
+          allOf:
+          - $ref: '#/components/schemas/Renases'
+          readOnly: true
+      required:
+      - renases
+    ProcedimentoServico:
+      type: object
+      properties:
+        servico_classificacao:
+          allOf:
+          - $ref: '#/components/schemas/ServicoClassificacao'
+          readOnly: true
+      required:
+      - servico_classificacao
+    ProcedimentoSiaSih:
+      type: object
+      properties:
+        sia_sih:
+          allOf:
+          - $ref: '#/components/schemas/SiaSih'
+          readOnly: true
+        tp_procedimento:
+          type: string
+          title: Tipo (A/H)
+          maxLength: 1
+      required:
+      - sia_sih
+    ProcedimentoTuss:
+      type: object
+      properties:
+        tuss:
+          allOf:
+          - $ref: '#/components/schemas/Tuss'
+          readOnly: true
+      required:
+      - tuss
+    RedeAtencao:
+      type: object
+      properties:
+        co_rede_atencao:
+          type: string
+          title: Código
+          maxLength: 3
+        no_rede_atencao:
+          type: string
+          title: Nome
+          maxLength: 50
+      required:
+      - co_rede_atencao
+    Registro:
+      type: object
+      properties:
+        co_registro:
+          type: string
+          title: Código
+          maxLength: 2
+        no_registro:
+          type: string
+          title: Nome
+          maxLength: 50
+      required:
+      - co_registro
+    RegraCondicionada:
+      type: object
+      properties:
+        co_regra_condicionada:
+          type: string
+          title: Código
+          maxLength: 4
+        no_regra_condicionada:
+          type: string
+          title: Nome
+          maxLength: 150
+        ds_regra_condicionada:
+          type: string
+          title: Descrição
+      required:
+      - co_regra_condicionada
+    Renases:
+      type: object
+      properties:
+        co_renases:
+          type: string
+          title: Código RENASES
+          maxLength: 10
+        no_renases:
+          type: string
+          title: Nome
+          maxLength: 150
+      required:
+      - co_renases
+    Rubrica:
+      type: object
+      properties:
+        co_rubrica:
+          type: string
+          title: Código
+          maxLength: 6
+        no_rubrica:
+          type: string
+          title: Nome
+          maxLength: 100
+      required:
+      - co_rubrica
+    Servico:
+      type: object
+      properties:
+        co_servico:
+          type: string
+          title: Código
+          maxLength: 3
+        no_servico:
+          type: string
+          title: Nome
+          maxLength: 120
+      required:
+      - co_servico
+    ServicoClassificacao:
+      type: object
+      properties:
+        co_servico:
+          type: string
+          title: Código do serviço
+          maxLength: 3
+        co_classificacao:
+          type: string
+          title: Código da classificação
+          maxLength: 3
+        no_classificacao:
+          type: string
+          title: Nome
+          maxLength: 150
+      required:
+      - co_classificacao
+      - co_servico
+    SiaSih:
+      type: object
+      properties:
+        co_procedimento_sia_sih:
+          type: string
+          title: Código do procedimento SIA/SIH
+          maxLength: 10
+        no_procedimento_sia_sih:
+          type: string
+          title: Nome
+          maxLength: 100
+        tp_procedimento:
+          type: string
+          title: Tipo (A/H)
+          maxLength: 1
+      required:
+      - co_procedimento_sia_sih
+    SubGrupo:
+      type: object
+      properties:
+        co_grupo:
+          type: string
+          title: Código do grupo
+          maxLength: 2
+        co_sub_grupo:
+          type: string
+          title: Código
+          maxLength: 2
+        no_sub_grupo:
+          type: string
+          title: Nome
+          maxLength: 100
+      required:
+      - co_grupo
+      - co_sub_grupo
+    TipoLeito:
+      type: object
+      properties:
+        co_tipo_leito:
+          type: string
+          title: Código
+          maxLength: 2
+        no_tipo_leito:
+          type: string
+          title: Nome
+          maxLength: 60
+      required:
+      - co_tipo_leito
+    Tuss:
+      type: object
+      properties:
+        co_tuss:
+          type: string
+          title: Código TUSS
+          maxLength: 10
+        no_tuss:
+          type: string
+          title: Nome
+          maxLength: 450
+      required:
+      - co_tuss
+tags:
+- name: Competências
+  description: Competências disponíveis (`AAAAMM`) e a competência vigente.
+- name: Grupos
+  description: Grupos de procedimentos — 1º nível da hierarquia.
+- name: Subgrupos
+  description: Subgrupos de procedimentos — 2º nível da hierarquia.
+- name: Formas de Organização
+  description: Formas de organização — 3º nível da hierarquia.
+- name: Procedimentos
+  description: Procedimentos e suas relações (CIDs, ocupações, serviços, leitos, etc.).
+- name: Financiamentos
+  description: Tipos de financiamento.
+- name: Rubricas
+  description: Rubricas / fontes de recurso.
+- name: Modalidades
+  description: Modalidades de atendimento.
+- name: Registros
+  description: Tipos de registro (instrumento de produção).
+- name: Serviços
+  description: Serviços especializados.
+- name: Serviços / Classificações
+  description: Classificações de serviço.
+- name: Tipos de Leito
+  description: Tipos de leito.
+- name: Habilitações
+  description: Habilitações.
+- name: Detalhes
+  description: Detalhes de procedimento.
+- name: SIA/SIH
+  description: Tipos de produção SIA/SIH.
+- name: CIDs
+  description: Classificação Internacional de Doenças.
+- name: Ocupações
+  description: Ocupações (CBO).
+- name: Grupos de Habilitação
+  description: Grupos de habilitação.
+- name: Regras Condicionadas
+  description: Regras condicionadas.
+- name: Redes de Atenção
+  description: Redes de atenção à saúde.
+- name: Componentes de Rede
+  description: Componentes das redes de atenção.
+- name: TUSS
+  description: Correlação SIGTAP × TUSS.
+- name: RENASES
+  description: Rol RENASES.
