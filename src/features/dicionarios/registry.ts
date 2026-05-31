@@ -35,6 +35,25 @@ export interface DicDetailField {
   kind?: DicCellKind;
 }
 
+/** Fonte de opções de um filtro Select (carregadas da API, em cascata). */
+export interface DicFilterSelect {
+  /** Endpoint base das opções (ex.: "/grupos"). */
+  path: string;
+  /** Campo de código no item retornado (vira o `value` da opção). */
+  valueField: string;
+  /** Campo de nome (compõe o rótulo "código — nome"). */
+  labelField?: string;
+  /** Params herdados de filtros anteriores que restringem a lista (cascata). */
+  parentParams?: string[];
+}
+
+/** Filtro de listagem: input de texto por padrão; `select` carrega da API. */
+export interface DicFilter {
+  param: string;
+  label: string;
+  select?: DicFilterSelect;
+}
+
 export type DicGroup = "hierarquia" | "dimensoes" | "dicionarios";
 
 export interface DictionaryConfig {
@@ -49,7 +68,24 @@ export interface DictionaryConfig {
   defaultOrdering?: string;
   columns: DicColumn[];
   detailFields?: DicDetailField[];
-  filters?: { param: string; label: string }[];
+  filters?: DicFilter[];
+  /**
+   * Filtro segmentado (toggle) exibido na toolbar da DataTable, antes da busca
+   * (mesma linha dos botões de exportação). A 1ª opção é o "todos" e limpa o
+   * filtro (não vai para a querystring). Usado pelo Tipo (A/H) de SIA/SIH.
+   */
+  toolbarFilter?: {
+    param: string;
+    ariaLabel?: string;
+    options: { value: string; label: string }[];
+  };
+  /**
+   * Mantém a busca numa linha dedicada acima da tabela (junto aos filtros em
+   * cascata). Quando ausente/false, a busca vai para a toolbar da DataTable, na
+   * mesma linha dos botões de exportação. Usado pelos dicionários com filtros
+   * compostos hierárquicos (subgrupos, formas-organizacao, servico-classificacoes).
+   */
+  dedicatedFilterRow?: boolean;
   group: DicGroup;
 }
 
@@ -80,6 +116,7 @@ export const DICTIONARIES: DictionaryConfig[] = [
     basePath: "/subgrupos",
     versioned: true,
     defaultOrdering: "co_sub_grupo",
+    dedicatedFilterRow: true,
     group: "hierarquia",
     columns: [
       code("co_grupo", "Grupo"),
@@ -87,8 +124,21 @@ export const DICTIONARIES: DictionaryConfig[] = [
       name("no_sub_grupo"),
     ],
     filters: [
-      { param: "co_grupo", label: "Grupo" },
-      { param: "co_sub_grupo", label: "Subgrupo" },
+      {
+        param: "co_grupo",
+        label: "Grupo",
+        select: { path: "/grupos", valueField: "co_grupo", labelField: "no_grupo" },
+      },
+      {
+        param: "co_sub_grupo",
+        label: "Subgrupo",
+        select: {
+          path: "/subgrupos",
+          valueField: "co_sub_grupo",
+          labelField: "no_sub_grupo",
+          parentParams: ["co_grupo"],
+        },
+      },
     ],
   },
   {
@@ -98,6 +148,7 @@ export const DICTIONARIES: DictionaryConfig[] = [
     basePath: "/formas-organizacao",
     versioned: true,
     defaultOrdering: "co_forma_organizacao",
+    dedicatedFilterRow: true,
     group: "hierarquia",
     columns: [
       code("co_grupo", "Grupo"),
@@ -106,9 +157,31 @@ export const DICTIONARIES: DictionaryConfig[] = [
       name("no_forma_organizacao"),
     ],
     filters: [
-      { param: "co_grupo", label: "Grupo" },
-      { param: "co_sub_grupo", label: "Subgrupo" },
-      { param: "co_forma_organizacao", label: "Forma" },
+      {
+        param: "co_grupo",
+        label: "Grupo",
+        select: { path: "/grupos", valueField: "co_grupo", labelField: "no_grupo" },
+      },
+      {
+        param: "co_sub_grupo",
+        label: "Subgrupo",
+        select: {
+          path: "/subgrupos",
+          valueField: "co_sub_grupo",
+          labelField: "no_sub_grupo",
+          parentParams: ["co_grupo"],
+        },
+      },
+      {
+        param: "co_forma_organizacao",
+        label: "Forma",
+        select: {
+          path: "/formas-organizacao",
+          valueField: "co_forma_organizacao",
+          labelField: "no_forma_organizacao",
+          parentParams: ["co_grupo", "co_sub_grupo"],
+        },
+      },
     ],
   },
 
@@ -177,6 +250,7 @@ export const DICTIONARIES: DictionaryConfig[] = [
     basePath: "/servico-classificacoes",
     versioned: true,
     defaultOrdering: "co_servico",
+    dedicatedFilterRow: true,
     group: "dimensoes",
     columns: [
       code("co_servico", "Serviço"),
@@ -184,8 +258,21 @@ export const DICTIONARIES: DictionaryConfig[] = [
       name("no_classificacao"),
     ],
     filters: [
-      { param: "co_servico", label: "Serviço" },
-      { param: "co_classificacao", label: "Classificação" },
+      {
+        param: "co_servico",
+        label: "Serviço",
+        select: { path: "/servicos", valueField: "co_servico", labelField: "no_servico" },
+      },
+      {
+        param: "co_classificacao",
+        label: "Classificação",
+        select: {
+          path: "/servico-classificacoes",
+          valueField: "co_classificacao",
+          labelField: "no_classificacao",
+          parentParams: ["co_servico"],
+        },
+      },
     ],
   },
   {
@@ -235,10 +322,16 @@ export const DICTIONARIES: DictionaryConfig[] = [
       name("no_procedimento_sia_sih"),
       { field: "tp_procedimento", header: "Tipo", kind: "tpSiaSih" },
     ],
-    filters: [
-      { param: "co_procedimento_sia_sih", label: "Código SIA/SIH" },
-      { param: "tp_procedimento", label: "Tipo (A/H)" },
-    ],
+    // Busca (toolbar) já cobre código e nome; Tipo (A/H) vira toggle na toolbar.
+    toolbarFilter: {
+      param: "tp_procedimento",
+      ariaLabel: "Filtrar por tipo",
+      options: [
+        { value: "ambos", label: "Ambos" },
+        { value: "A", label: "Ambulatorial" },
+        { value: "H", label: "Hospitalar" },
+      ],
+    },
   },
 
   // ── Dicionários sem competência (classe C) ──────────────────────────────

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Activity } from "lucide-react";
 import { useDictionaryList } from "@/api/queries";
@@ -7,8 +7,7 @@ import { PageHeader } from "@/components/common/PageHeader";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import { SearchInput } from "@/components/filters/SearchInput";
 import { FilterChips, type ActiveFilter } from "@/components/filters/FilterChips";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Segmented } from "@/components/filters/Segmented";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/data-table/DataTable";
 import { EmptyState } from "@/components/common/states";
@@ -17,6 +16,7 @@ import { readParam } from "@/lib/url";
 import { ReversaDialog } from "@/features/reversas/ReversaDialog";
 import { renderDicValue } from "./render";
 import { DictionaryDetailDialog } from "./DictionaryDetailDialog";
+import { DictionaryFilters } from "./DictionaryFilters";
 import type { DictionaryConfig } from "./registry";
 
 type Row = Record<string, unknown>;
@@ -40,14 +40,20 @@ export function DictionaryList({ config }: { config: DictionaryConfig }) {
     setFilters,
   } = useListUrlState({ defaultOrdering: config.defaultOrdering });
 
-  // Filtros compostos (ex.: co_grupo) lidos da URL.
+  // Filtros (compostos como co_grupo + o toggle da toolbar) lidos da URL.
   const filterValues = useMemo(() => {
     const out: Record<string, string | undefined> = {};
     for (const f of config.filters ?? []) {
       out[f.param] = readParam(searchParams, f.param);
     }
+    if (config.toolbarFilter) {
+      out[config.toolbarFilter.param] = readParam(
+        searchParams,
+        config.toolbarFilter.param
+      );
+    }
     return out;
-  }, [config.filters, searchParams]);
+  }, [config.filters, config.toolbarFilter, searchParams]);
 
   const query = useDictionaryList<Row>(
     config.key,
@@ -126,8 +132,15 @@ export function DictionaryList({ config }: { config: DictionaryConfig }) {
   const count = query.data?.count;
   const competencia = query.data?.competencia;
 
+  // Busca inline (na toolbar da DataTable, junto aos botões de exportação),
+  // exceto nos dicionários com filtros compostos em cascata (dedicatedFilterRow).
+  const inlineSearch = !config.dedicatedFilterRow;
+  const hasFilters = (config.filters?.length ?? 0) > 0;
+
   const activeFilters: ActiveFilter[] = [];
-  if (search)
+  // Com busca inline, a própria SearchInput da toolbar tem botão de limpar — não
+  // duplicamos o chip de "Busca".
+  if (search && !inlineSearch)
     activeFilters.push({
       key: "search",
       label: "Busca",
@@ -144,6 +157,22 @@ export function DictionaryList({ config }: { config: DictionaryConfig }) {
         onRemove: () => setFilters({ [f.param]: undefined }),
       });
   }
+
+  // Filtro segmentado da toolbar (ex.: Tipo A/H do SIA/SIH). A 1ª opção limpa.
+  const toolbarFilter = config.toolbarFilter;
+  const toolbarStart = toolbarFilter ? (
+    <Segmented
+      ariaLabel={toolbarFilter.ariaLabel}
+      value={filterValues[toolbarFilter.param] ?? toolbarFilter.options[0].value}
+      options={toolbarFilter.options}
+      onChange={(v) =>
+        setFilters({
+          [toolbarFilter.param]:
+            v === toolbarFilter.options[0].value ? undefined : v,
+        })
+      }
+    />
+  ) : undefined;
 
   return (
     <div className="space-y-5">
@@ -165,36 +194,39 @@ export function DictionaryList({ config }: { config: DictionaryConfig }) {
         }
       />
 
-      <div className="space-y-3">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-          <SearchInput
-            value={search}
-            onDebouncedChange={setSearch}
-            placeholder={config.searchPlaceholder}
-            className="sm:max-w-md sm:flex-1"
-          />
-          {config.filters?.map((f) => (
-            <TextFilterInput
-              key={f.param}
-              label={f.label}
-              value={filterValues[f.param] ?? ""}
-              onCommit={(v) => setFilters({ [f.param]: v || undefined })}
+      {(!inlineSearch || hasFilters || activeFilters.length > 0) && (
+        <div className="space-y-3">
+          {!inlineSearch && (
+            <SearchInput
+              value={search}
+              onDebouncedChange={setSearch}
+              placeholder={config.searchPlaceholder}
+              className="sm:max-w-md sm:flex-1"
             />
-          ))}
-        </div>
+          )}
 
-        <FilterChips
-          filters={activeFilters}
-          onClearAll={() =>
-            setFilters({
-              search: undefined,
-              ...Object.fromEntries(
-                (config.filters ?? []).map((f) => [f.param, undefined])
-              ),
-            })
-          }
-        />
-      </div>
+          {hasFilters && config.filters && (
+            <DictionaryFilters
+              filters={config.filters}
+              values={filterValues}
+              versioned={config.versioned}
+              onChange={(patch) => setFilters(patch)}
+            />
+          )}
+
+          <FilterChips
+            filters={activeFilters}
+            onClearAll={() =>
+              setFilters({
+                search: undefined,
+                ...Object.fromEntries(
+                  (config.filters ?? []).map((f) => [f.param, undefined])
+                ),
+              })
+            }
+          />
+        </div>
+      )}
 
       <DataTable
         columns={columns}
@@ -213,6 +245,14 @@ export function DictionaryList({ config }: { config: DictionaryConfig }) {
         onPageChange={setPage}
         onPageSizeChange={setPageSize}
         onOrderingChange={setOrdering}
+        searchValue={inlineSearch ? search : undefined}
+        onSearchChange={inlineSearch ? setSearch : undefined}
+        searchPlaceholder={
+          inlineSearch
+            ? (config.searchPlaceholder ?? "Buscar por código ou nome…")
+            : undefined
+        }
+        toolbarStart={toolbarStart}
         isLoading={query.isLoading}
         isFetching={query.isFetching}
         error={query.error}
@@ -247,9 +287,9 @@ export function DictionaryList({ config }: { config: DictionaryConfig }) {
           onVerProcedimentos={
             config.reverse
               ? (co, name) => {
-                  setDetailCo(null);
-                  setReversa({ co, name });
-                }
+                setDetailCo(null);
+                setReversa({ co, name });
+              }
               : undefined
           }
         />
@@ -266,36 +306,6 @@ export function DictionaryList({ config }: { config: DictionaryConfig }) {
           }}
         />
       )}
-    </div>
-  );
-}
-
-/** Input de filtro textual (código) que confirma ao sair/Enter. */
-function TextFilterInput({
-  label,
-  value,
-  onCommit,
-}: {
-  label: string;
-  value: string;
-  onCommit: (value: string) => void;
-}) {
-  const [local, setLocal] = useState(value);
-  useEffect(() => setLocal(value), [value]);
-  return (
-    <div className="space-y-1.5">
-      <Label className="text-xs text-muted-foreground">{label}</Label>
-      <Input
-        value={local}
-        onChange={(e) => setLocal(e.target.value)}
-        onBlur={() => onCommit(local)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") onCommit(local);
-        }}
-        className="w-full sm:w-32"
-        placeholder="código"
-        inputMode="numeric"
-      />
     </div>
   );
 }
