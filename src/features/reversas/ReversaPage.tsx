@@ -87,7 +87,7 @@ export function ReversaPage({ kind }: { kind: ReversaKind }) {
         value={search}
         onDebouncedChange={setSearch}
         placeholder="Buscar nos procedimentos relacionados…"
-        className="sm:max-w-md"
+        className="sm:max-w-full"
       />
 
       <DataTable
