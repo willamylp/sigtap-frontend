@@ -75,8 +75,8 @@ interface DataTableProps<T> {
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   searchPlaceholder?: string;
-  /** Conteúdo no início da toolbar, antes da busca (ex.: filtro segmentado). */
-  toolbarStart?: React.ReactNode;
+  /** Conteúdo após a busca, na esquerda da toolbar (ex.: filtro segmentado). */
+  toolbarFilter?: React.ReactNode;
 
   enableColumnVisibility?: boolean;
   enableDensityToggle?: boolean;
@@ -114,7 +114,7 @@ export function DataTable<T>({
   searchValue,
   onSearchChange,
   searchPlaceholder,
-  toolbarStart,
+  toolbarFilter,
   enableColumnVisibility = true,
   enableDensityToggle = true,
   enableExport = true,
@@ -179,7 +179,7 @@ export function DataTable<T>({
 
   const showToolbar =
     !!onSearchChange ||
-    !!toolbarStart ||
+    !!toolbarFilter ||
     enableColumnVisibility ||
     enableDensityToggle ||
     enableExport ||
@@ -193,9 +193,8 @@ export function DataTable<T>({
     <div className="space-y-3">
       {showToolbar && (
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          {onSearchChange || toolbarStart ? (
+          {onSearchChange || toolbarFilter ? (
             <div className="flex flex-col gap-2 sm:flex-1 sm:flex-row sm:items-center">
-              {toolbarStart}
               {onSearchChange && (
                 <SearchInput
                   value={searchValue ?? ""}
@@ -204,6 +203,7 @@ export function DataTable<T>({
                   className="sm:max-w-xs sm:flex-1"
                 />
               )}
+              {toolbarFilter}
             </div>
           ) : (
             <div className="hidden sm:block" />
