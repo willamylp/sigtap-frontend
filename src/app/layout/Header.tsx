@@ -50,7 +50,9 @@ function HeaderSearch({ className }: { className?: string }) {
 
 export function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const collapsed = useSidebar()?.collapsed ?? false;
+  // Acompanha a largura efetiva da sidebar (inclui o hover de expansão), para
+  // o bloco da logo expandir/recolher junto com ela.
+  const expanded = useSidebar()?.expanded ?? true;
 
   return (
     <header className="sticky top-0 z-40 dark:border-b dark:border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 shadow">
@@ -59,7 +61,7 @@ export function Header() {
         <div
           className={cn(
             "flex items-center gap-2 px-4 transition-[width] duration-200 ease-in-out lg:shrink-0 lg:border-r lg:border-sidebar-border lg:bg-blue-950 dark:bg-slate-950",
-            collapsed ? "lg:w-16 lg:justify-center lg:px-2" : "lg:w-80"
+            expanded ? "lg:w-80" : "lg:w-16 lg:justify-center lg:px-2"
           )}
         >
           <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
@@ -91,7 +93,7 @@ export function Header() {
             <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
               S
             </span>
-            <span className={cn(collapsed && "lg:hidden")}>SIGTAP</span>
+            <span className={cn(!expanded && "lg:hidden")}>SIGTAP</span>
           </Link>
         </div>
 

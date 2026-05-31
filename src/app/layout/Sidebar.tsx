@@ -221,10 +221,9 @@ export function SidebarNav({
 export function Sidebar() {
   const sidebar = useSidebar();
   const collapsed = sidebar?.collapsed ?? false;
-  const [hovered, setHovered] = useState(false);
-
-  // Recolhida por preferência, mas o hover expande temporariamente.
-  const expanded = !collapsed || hovered;
+  const hovered = sidebar?.hovered ?? false;
+  // Hover/expansão vêm do contexto para que o cabeçalho da logo acompanhe.
+  const expanded = sidebar?.expanded ?? true;
 
   return (
     <aside
@@ -232,8 +231,8 @@ export function Sidebar() {
         "relative hidden shrink-0 transition-[width] duration-200 ease-in-out lg:block",
         collapsed ? "w-16" : "w-80"
       )}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => sidebar?.setHovered(true)}
+      onMouseLeave={() => sidebar?.setHovered(false)}
     >
       <div
         className={cn(
@@ -249,12 +248,7 @@ export function Sidebar() {
         <div className="shrink-0 border-t border-white/10 p-2">
           <button
             type="button"
-            onClick={() => {
-              // Reseta o hover para o recolher refletir na hora (sem esperar o
-              // ponteiro sair do painel).
-              setHovered(false);
-              sidebar?.toggleCollapsed();
-            }}
+            onClick={() => sidebar?.toggleCollapsed()}
             aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
             aria-pressed={!collapsed}
             className={cn(

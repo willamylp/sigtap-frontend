@@ -13,11 +13,13 @@ function getInitialCollapsed(): boolean {
 
 /**
  * Mantém a preferência de recolhimento da sidebar (persistida em localStorage,
- * mesmo padrão do tema). `collapsed` reflete a escolha do usuário; o hover que
- * expande temporariamente é estado local da própria Sidebar.
+ * mesmo padrão do tema). `collapsed` reflete a escolha do usuário; `hovered` é o
+ * hover temporário que expande sem mudar a preferência. Ambos ficam no contexto
+ * para que a Sidebar e o cabeçalho da logo expandam/recolham em conjunto.
  */
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsedState] = useState(getInitialCollapsed);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     try {
@@ -28,14 +30,24 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   }, [collapsed]);
 
   const setCollapsed = useCallback((next: boolean) => setCollapsedState(next), []);
-  const toggleCollapsed = useCallback(
-    () => setCollapsedState((c) => !c),
-    []
-  );
+  const toggleCollapsed = useCallback(() => {
+    // Recolher/expandir manualmente zera o hover, refletindo na hora.
+    setHovered(false);
+    setCollapsedState((c) => !c);
+  }, []);
+
+  const expanded = !collapsed || hovered;
 
   const value = useMemo(
-    () => ({ collapsed, setCollapsed, toggleCollapsed }),
-    [collapsed, setCollapsed, toggleCollapsed]
+    () => ({
+      collapsed,
+      setCollapsed,
+      toggleCollapsed,
+      hovered,
+      setHovered,
+      expanded,
+    }),
+    [collapsed, setCollapsed, toggleCollapsed, hovered, expanded]
   );
 
   return (
