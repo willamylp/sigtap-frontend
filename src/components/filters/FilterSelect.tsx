@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -45,10 +46,19 @@ export function FilterSelect({
       <Select
         value={value ?? ALL}
         onValueChange={(v) => onChange(v === ALL ? undefined : v)}
-        disabled={disabled}
+        disabled={disabled || loading}
       >
-        <SelectTrigger>
+        <SelectTrigger
+          aria-busy={loading}
+          className={cn(loading && "text-muted-foreground")}
+        >
           <SelectValue placeholder={loading ? "Carregando…" : placeholder} />
+          {loading && (
+            <Loader2
+              className="ml-auto h-3.5 w-3.5 shrink-0 animate-spin text-muted-foreground"
+              aria-hidden
+            />
+          )}
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={ALL}>{allLabel}</SelectItem>

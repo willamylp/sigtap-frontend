@@ -188,6 +188,9 @@ export function DataTable<T>({
   const cellPadding = density === "compact" ? "py-1.5" : "py-2.5";
   const isInitialLoading = isLoading && !data;
   const isEmpty = !isInitialLoading && !error && (count === 0 || (data?.length ?? 0) === 0);
+  // Refetch em segundo plano (paginação/ordenação/troca de filtro), com dados
+  // antigos ainda visíveis → barra de progresso indeterminada no topo da tabela.
+  const showProgress = !!isFetching && !isInitialLoading;
 
   return (
     <div className="space-y-3">
@@ -308,6 +311,15 @@ export function DataTable<T>({
       )}
 
       <div className="relative overflow-hidden rounded-lg border border-border bg-card">
+        {showProgress && (
+          <div
+            role="progressbar"
+            aria-label="Carregando dados"
+            className="absolute inset-x-0 top-0 z-10 h-0.5 overflow-hidden bg-primary/15"
+          >
+            <span className="absolute h-full animate-indeterminate-bar bg-primary" />
+          </div>
+        )}
         {error && !data ? (
           <div className="p-2">
             <ErrorState error={error} onRetry={onRetry} />

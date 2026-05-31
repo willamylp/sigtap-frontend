@@ -103,12 +103,19 @@ export default {
             transform: "translate(-50%, calc(-50% - 2.5rem)) scale(0.98)",
           },
         },
+        // Barra de progresso indeterminada (refetch em segundo plano).
+        "indeterminate-bar": {
+          "0%": { left: "-40%", right: "100%" },
+          "60%": { left: "100%", right: "-40%" },
+          "100%": { left: "100%", right: "-40%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "dialog-in": "dialog-in 280ms cubic-bezier(0.16, 1, 0.3, 1)",
         "dialog-out": "dialog-out 200ms ease-in",
+        "indeterminate-bar": "indeterminate-bar 1.2s ease-in-out infinite",
       },
     },
   },
