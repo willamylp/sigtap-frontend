@@ -1,17 +1,54 @@
 import { useNavigate } from "react-router-dom";
-import { Activity, ArrowRight, Briefcase, Stethoscope } from "lucide-react";
+import {
+  Activity,
+  ArrowRight,
+  Briefcase,
+  ClipboardList,
+  Stethoscope,
+  type LucideIcon,
+} from "lucide-react";
 import { getCids, getOcupacoes } from "@/api/endpoints";
 import { useCompetencia } from "@/hooks/useCompetencia";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AsyncCombobox } from "@/components/filters/AsyncCombobox";
 import { SearchInput } from "@/components/filters/SearchInput";
+import { relatorioPath } from "@/features/relatorios/registry";
 import { formatCompetenciaExtenso } from "@/lib/format";
 import type { Cid, Ocupacao } from "@/api/types";
 
-const SHORTCUTS = [
+interface Shortcut {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+  desc: string;
+}
+
+const SHORTCUTS: Shortcut[] = [
   { to: "/procedimentos", label: "Procedimentos", icon: Activity, desc: "Buscar e filtrar a tabela" },
   { to: "/cids", label: "CIDs", icon: Stethoscope, desc: "Classificação de doenças" },
   { to: "/ocupacoes", label: "Ocupações (CBO)", icon: Briefcase, desc: "Profissionais habilitados" },
+];
+
+/** Atalhos para os relatórios de relacionamento (RF-09). */
+const REPORT_SHORTCUTS: Shortcut[] = [
+  {
+    to: relatorioPath("procedimento-cbo"),
+    label: "Procedimento × CBO",
+    icon: Briefcase,
+    desc: "Ocupações por procedimento (e vice-versa)",
+  },
+  {
+    to: relatorioPath("procedimento-cid"),
+    label: "Procedimento × CID",
+    icon: Stethoscope,
+    desc: "CIDs por procedimento (e vice-versa)",
+  },
+  {
+    to: relatorioPath("procedimento-registro"),
+    label: "Procedimento × Instrumento",
+    icon: ClipboardList,
+    desc: "Instrumento de registro por procedimento",
+  },
 ];
 
 export function HomePage() {
@@ -89,27 +126,47 @@ export function HomePage() {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Atalhos
         </h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {SHORTCUTS.map((s) => (
-            <Card
-              key={s.to}
-              className="group cursor-pointer transition-colors hover:border-primary/50 hover:bg-accent/40"
-              onClick={() => navigate(s.to)}
-            >
-              <CardHeader className="flex-row items-center gap-3 space-y-0">
-                <span className="rounded-lg bg-primary/10 p-2 text-primary">
-                  <s.icon className="h-5 w-5" />
-                </span>
-                <div className="flex-1">
-                  <CardTitle className="text-base">{s.label}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{s.desc}</p>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
+        <ShortcutGrid items={SHORTCUTS} onNavigate={navigate} />
       </div>
+
+      <div>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Relatórios
+        </h2>
+        <ShortcutGrid items={REPORT_SHORTCUTS} onNavigate={navigate} />
+      </div>
+    </div>
+  );
+}
+
+/** Grade de cartões de atalho. */
+function ShortcutGrid({
+  items,
+  onNavigate,
+}: {
+  items: Shortcut[];
+  onNavigate: (to: string) => void;
+}) {
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((s) => (
+        <Card
+          key={s.to}
+          className="group cursor-pointer transition-colors hover:border-primary/50 hover:bg-accent/40"
+          onClick={() => onNavigate(s.to)}
+        >
+          <CardHeader className="flex-row items-center gap-3 space-y-0">
+            <span className="rounded-lg bg-primary/10 p-2 text-primary">
+              <s.icon className="h-5 w-5" />
+            </span>
+            <div className="flex-1">
+              <CardTitle className="text-base">{s.label}</CardTitle>
+              <p className="text-sm text-muted-foreground">{s.desc}</p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+          </CardHeader>
+        </Card>
+      ))}
     </div>
   );
 }

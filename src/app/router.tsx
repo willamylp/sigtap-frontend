@@ -1,7 +1,8 @@
 import { lazy } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { AppShell } from "./layout/AppShell";
 import { DICTIONARIES } from "@/features/dicionarios/registry";
+import { RELATORIOS, RELATORIOS_BASE } from "@/features/relatorios/registry";
 
 // Code splitting por rota (PRD §12).
 const HomePage = lazy(() =>
@@ -32,6 +33,11 @@ const ReversaPage = lazy(() =>
     default: m.ReversaPage,
   }))
 );
+const RelatorioRelacionamento = lazy(() =>
+  import("@/features/relatorios/RelatorioRelacionamento").then((m) => ({
+    default: m.RelatorioRelacionamento,
+  }))
+);
 const NotFoundPage = lazy(() =>
   import("@/features/NotFoundPage").then((m) => ({ default: m.NotFoundPage }))
 );
@@ -43,6 +49,23 @@ export function AppRouter() {
         <Route path="/" element={<HomePage />} />
         <Route path="/procedimentos" element={<ProcedimentosListPage />} />
         <Route path="/procedimentos/:co" element={<ProcedimentoDetailPage />} />
+
+        {/* Relatórios → Relacionamentos (config-driven, RF-02) */}
+        <Route
+          path="/relatorios"
+          element={<Navigate to={`${RELATORIOS_BASE}/${RELATORIOS[0].slug}`} replace />}
+        />
+        <Route
+          path={RELATORIOS_BASE}
+          element={<Navigate to={`${RELATORIOS_BASE}/${RELATORIOS[0].slug}`} replace />}
+        />
+        {RELATORIOS.map((cfg) => (
+          <Route
+            key={cfg.slug}
+            path={`${RELATORIOS_BASE}/${cfg.slug}`}
+            element={<RelatorioRelacionamento config={cfg} />}
+          />
+        ))}
 
         {DICTIONARIES.map((config) => (
           <Route key={config.key}>
