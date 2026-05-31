@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ApiError } from "@/api/client";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { CompetenciaProvider } from "./providers/CompetenciaProvider";
+import { SidebarProvider } from "./providers/SidebarProvider";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -32,12 +33,14 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ThemeProvider>
-          <CompetenciaProvider>
-            <TooltipProvider delayDuration={200}>
-              {children}
-              <Toaster />
-            </TooltipProvider>
-          </CompetenciaProvider>
+          <SidebarProvider>
+            <CompetenciaProvider>
+              <TooltipProvider delayDuration={200}>
+                {children}
+                <Toaster />
+              </TooltipProvider>
+            </CompetenciaProvider>
+          </SidebarProvider>
         </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>

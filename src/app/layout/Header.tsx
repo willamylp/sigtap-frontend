@@ -11,6 +11,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { useSidebar } from "@/hooks/useSidebar";
 import { CompetenciaSelector } from "./CompetenciaSelector";
 import { ThemeToggle } from "./ThemeToggle";
 import { SidebarNav } from "./Sidebar";
@@ -49,12 +50,18 @@ function HeaderSearch({ className }: { className?: string }) {
 
 export function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const collapsed = useSidebar()?.collapsed ?? false;
 
   return (
     <header className="sticky top-0 z-40 dark:border-b dark:border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 shadow">
       <div className="flex h-14 items-stretch">
         {/* Bloco da logo — mesma largura do sidebar (alinhado à coluna escura). */}
-        <div className="flex items-center gap-2 px-4 lg:w-64 lg:shrink-0 lg:border-r lg:border-sidebar-border lg:bg-blue-950 dark:bg-slate-950">
+        <div
+          className={cn(
+            "flex items-center gap-2 px-4 transition-[width] duration-200 ease-in-out lg:shrink-0 lg:border-r lg:border-sidebar-border lg:bg-blue-950 dark:bg-slate-950",
+            collapsed ? "lg:w-16 lg:justify-center lg:px-2" : "lg:w-80"
+          )}
+        >
           <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
             <SheetTrigger asChild>
               <Button
@@ -81,10 +88,10 @@ export function Header() {
             to="/"
             className="flex items-center gap-2 rounded font-semibold tracking-tight text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring lg:text-white"
           >
-            <span className="grid h-7 w-7 place-items-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
               S
             </span>
-            <span>SIGTAP</span>
+            <span className={cn(collapsed && "lg:hidden")}>SIGTAP</span>
           </Link>
         </div>
 
