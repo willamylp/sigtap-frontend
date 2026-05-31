@@ -9,6 +9,7 @@ import { SearchInput } from "@/components/filters/SearchInput";
 import { FilterChips, type ActiveFilter } from "@/components/filters/FilterChips";
 import { Segmented } from "@/components/filters/Segmented";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { DataTable } from "@/components/data-table/DataTable";
 import { EmptyState } from "@/components/common/states";
 import { formatCompetencia, formatInt } from "@/lib/format";
@@ -158,17 +159,18 @@ export function DictionaryList({ config }: { config: DictionaryConfig }) {
       });
   }
 
-  // Filtro segmentado da toolbar (ex.: Tipo A/H do SIA/SIH). A 1ª opção limpa.
-  const toolbarFilter = config.toolbarFilter;
-  const toolbarStart = toolbarFilter ? (
+  // Filtro segmentado da toolbar (ex.: Tipo A/H do SIA/SIH), após a busca.
+  // A 1ª opção limpa.
+  const toolbarFilterCfg = config.toolbarFilter;
+  const toolbarFilterNode = toolbarFilterCfg ? (
     <Segmented
-      ariaLabel={toolbarFilter.ariaLabel}
-      value={filterValues[toolbarFilter.param] ?? toolbarFilter.options[0].value}
-      options={toolbarFilter.options}
+      ariaLabel={toolbarFilterCfg.ariaLabel}
+      value={filterValues[toolbarFilterCfg.param] ?? toolbarFilterCfg.options[0].value}
+      options={toolbarFilterCfg.options}
       onChange={(v) =>
         setFilters({
-          [toolbarFilter.param]:
-            v === toolbarFilter.options[0].value ? undefined : v,
+          [toolbarFilterCfg.param]:
+            v === toolbarFilterCfg.options[0].value ? undefined : v,
         })
       }
     />
@@ -196,22 +198,35 @@ export function DictionaryList({ config }: { config: DictionaryConfig }) {
 
       {(!inlineSearch || hasFilters || activeFilters.length > 0) && (
         <div className="space-y-3">
-          {!inlineSearch && (
-            <SearchInput
-              value={search}
-              onDebouncedChange={setSearch}
-              placeholder={config.searchPlaceholder}
-              className="sm:max-w-md sm:flex-1"
-            />
-          )}
-
-          {hasFilters && config.filters && (
+          {hasFilters && config.filters ? (
+            // Telas com filtros em cascata: busca + selects na MESMA linha.
             <DictionaryFilters
               filters={config.filters}
               values={filterValues}
               versioned={config.versioned}
               onChange={(patch) => setFilters(patch)}
+              leading={
+                !inlineSearch ? (
+                  <div className="space-y-1.5 sm:flex-1">
+                    <Label className="text-xs text-muted-foreground">Busca</Label>
+                    <SearchInput
+                      value={search}
+                      onDebouncedChange={setSearch}
+                      placeholder={config.searchPlaceholder}
+                    />
+                  </div>
+                ) : undefined
+              }
             />
+          ) : (
+            !inlineSearch && (
+              <SearchInput
+                value={search}
+                onDebouncedChange={setSearch}
+                placeholder={config.searchPlaceholder}
+                className="sm:max-w-md sm:flex-1"
+              />
+            )
           )}
 
           <FilterChips
@@ -252,7 +267,7 @@ export function DictionaryList({ config }: { config: DictionaryConfig }) {
             ? (config.searchPlaceholder ?? "Buscar por código ou nome…")
             : undefined
         }
-        toolbarStart={toolbarStart}
+        toolbarFilter={toolbarFilterNode}
         isLoading={query.isLoading}
         isFetching={query.isFetching}
         error={query.error}

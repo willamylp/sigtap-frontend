@@ -11,20 +11,24 @@ type Values = Record<string, string | undefined>;
 /**
  * Linha de filtros de uma listagem de dicionário (PRD §11.4). Cada filtro pode
  * ser um **Select** carregado da API (cascata: a 1ª opção limpa; cada nível
- * depende dos anteriores) ou um **input de texto**. Os campos ocupam toda a
- * largura disponível (cada um `flex-1`).
+ * depende dos anteriores) ou um **input de texto**. Um `leading` opcional (ex.:
+ * o campo de busca) entra como primeiro item da mesma linha. Todos os campos
+ * ocupam toda a largura disponível (cada um `flex-1`).
  */
 export function DictionaryFilters({
   filters,
   values,
   versioned,
   onChange,
+  leading,
 }: {
   filters: DicFilter[];
   values: Values;
   versioned: boolean;
   /** Aplica o patch na URL (limpando os filhos da cascata quando necessário). */
   onChange: (patch: Values) => void;
+  /** Conteúdo no início da linha (ex.: a busca), alinhado com os selects. */
+  leading?: React.ReactNode;
 }) {
   // Trocar um filtro limpa todos os subsequentes (são uma cascata ordenada).
   function handleChange(index: number, value: string | undefined) {
@@ -37,6 +41,7 @@ export function DictionaryFilters({
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+      {leading}
       {filters.map((f, i) =>
         f.select ? (
           <SelectFilter
