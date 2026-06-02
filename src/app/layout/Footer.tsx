@@ -109,7 +109,7 @@ export function Footer() {
         </a>
         <span className="text-border">|</span>
         <a
-          href={new URL(import.meta.env.VITE_API_BASE_URL, window.location.origin).origin}
+          href={new URL(import.meta.env.VITE_API_BASE_URL || "/", window.location.origin).origin}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 font-medium hover:font-bold text-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-all"
