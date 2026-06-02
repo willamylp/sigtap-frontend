@@ -88,7 +88,7 @@ export function Footer() {
   const IconDev = APP_INFO.iconInfoDevelpor;
 
   return (
-    <footer className="sticky bottom-0 z-20 mt-8 -mx-4 -mb-6 px-4 pb-6 pt-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 flex flex-col items-center justify-between gap-1 border-t border-border/60 bg-slate-100/95 backdrop-blur supports-[backdrop-filter]:bg-slate-100/80 dark:bg-slate-800/95 dark:supports-[backdrop-filter]:bg-slate-800/80 text-xs text-muted-foreground sm:flex-row">
+    <footer className="sticky bottom-0 z-20 mt-8 -mx-4 -mb-6 px-4 pb-5 pt-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 flex flex-col items-center justify-between gap-1 border-t border-border/60 bg-slate-100/95 backdrop-blur supports-[backdrop-filter]:bg-slate-100/80 dark:bg-slate-800/95 dark:supports-[backdrop-filter]:bg-slate-800/80 text-xs text-muted-foreground sm:flex-row">
       <span className="flex items-center gap-2">
         <span>
           Versão: <strong>{APP_INFO.version}</strong>
@@ -106,6 +106,17 @@ export function Footer() {
         >
           {APP_INFO.developer}
           <IconDev className="size-[1em]" />
+        </a>
+        <span className="text-border">|</span>
+        <a
+          href={new URL(import.meta.env.VITE_API_BASE_URL, window.location.origin).origin}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 font-medium hover:font-bold text-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-all"
+          title="Acessar Documentação da API"
+        >
+          API
+          <ExternalLink className="size-[1em]" />
         </a>
         <span className="text-border">|</span>
         <a
