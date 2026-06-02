@@ -23,7 +23,7 @@
 
 ## 📋 Sobre o Projeto
 
-O **SIGTAP Frontend** é uma Single Page Application que consome a [API REST do SIGTAP](https://github.com/willamylp/sigtap-api) para consultar procedimentos, dicionários e dimensões da Tabela Unificada do SUS, com filtros avançados, paginação e versionamento por competência.
+O **SIGTAP Frontend** é uma _Single Page Application_ que consome a [API REST do SIGTAP](https://sigtap-api.vercel.app/api/) para consultar procedimentos, dicionários e dimensões da Tabela Unificada do SUS, com filtros avançados, paginação e versionamento por competência.
 
 ---
 
