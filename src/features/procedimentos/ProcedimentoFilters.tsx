@@ -27,7 +27,7 @@ export function ProcedimentoFilters({
   onChange,
   activeAdvancedCount,
 }: Props) {
-  const [open, setOpen] = useState(activeAdvancedCount > 0);
+  const [open, setOpen] = useState(true);
 
   const financiamentosQ = useDictionaryList<Financiamento>(
     "financiamentos",
