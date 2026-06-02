@@ -79,8 +79,11 @@ export function Header() {
               side="left"
               className="w-72 overflow-y-auto border-sidebar-border bg-sidebar p-0 text-sidebar-foreground"
             >
-              <SheetHeader className="border-b border-sidebar-border p-4">
-                <SheetTitle className="text-white">SIGTAP</SheetTitle>
+              <SheetHeader className="border-b border-sidebar-border p-4 flex flex-row items-center justify-between space-y-0">
+                <div className="flex items-center gap-2">
+                  <SheetTitle className="text-white">SIGTAP</SheetTitle>
+                  <ThemeToggle />
+                </div>
               </SheetHeader>
               <SidebarNav onNavigate={() => setDrawerOpen(false)} />
             </SheetContent>
@@ -102,7 +105,9 @@ export function Header() {
           <HeaderSearch className="hidden flex-1 sm:flex sm:max-w-xl" />
           <div className="flex items-center gap-2">
             <CompetenciaSelector />
-            <ThemeToggle />
+            <div className="hidden lg:block">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </div>
