@@ -1,97 +1,75 @@
-# SIGTAP — Frontend de consulta
+# SIGTAP — Frontend
 
-SPA em **React + TypeScript + TailwindCSS** para consultar a Tabela Unificada do
-SIGTAP, consumindo a API REST pública (somente-leitura) `/api/v1/sigtap/`.
+SPA em **React 18 + TypeScript + TailwindCSS** para consulta à Tabela Unificada do SUS (SIGTAP), consumindo uma API REST pública e somente-leitura.
 
-Implementação do PRD [`docs/prd-frontend-sigtap.md`](docs/prd-frontend-sigtap.md).
-A fonte da verdade do contrato é [`docs/SIGTAP_API.yaml`](docs/SIGTAP_API.yaml).
+## ✨ Stack
 
-## Stack
-
-| Camada | Escolha |
+| Camada | Tecnologia |
 |---|---|
 | Build | Vite 5 |
 | Linguagem | TypeScript (strict) |
-| UI | TailwindCSS 3 + componentes estilo shadcn/ui (Radix UI) |
+| UI | TailwindCSS 3 + Radix UI (estilo shadcn/ui) |
 | Ícones | lucide-react |
-| Dados/cache | TanStack Query (React Query) |
-| Tabelas | TanStack Table (headless) |
-| Rotas | React Router v6 (estado de consulta na URL) |
-| Toasts | sonner |
+| Dados/Cache | TanStack Query v5 |
+| Tabelas | TanStack Table v8 (headless) |
+| Rotas | React Router v6 |
+| Toasts | Sonner |
 
-## Começando
+## 🚀 Começando
 
 ```bash
+# Instalar dependências
 npm install
+
+# Configurar variáveis de ambiente
 cp .env.example .env      # ajuste VITE_API_BASE_URL se necessário
+
+# Iniciar servidor de desenvolvimento
 npm run dev               # http://localhost:5173
 ```
 
-Em desenvolvimento, `VITE_API_BASE_URL=/api/v1/sigtap` usa o proxy do Vite que
-encaminha `/api` para `VITE_DEV_API_PROXY` (default `http://localhost:8000`).
-Em produção, aponte `VITE_API_BASE_URL` para a URL absoluta da API.
+### Scripts disponíveis
 
-### Scripts
-
-| Script | Ação |
+| Script | Descrição |
 |---|---|
-| `npm run dev` | servidor de desenvolvimento |
-| `npm run build` | typecheck (`tsc -b`) + build de produção (`dist/`) |
-| `npm run preview` | serve o build de produção |
-| `npm run typecheck` | apenas verificação de tipos |
+| `npm run dev` | Servidor de desenvolvimento (Vite) |
+| `npm run build` | Typecheck + build de produção (`dist/`) |
+| `npm run preview` | Serve o build de produção localmente |
+| `npm run lint` | Linting com ESLint |
+| `npm run typecheck` | Verificação de tipos (sem emitir) |
 
 ### Variáveis de ambiente
 
-| Variável | Exemplo | Uso |
+| Variável | Exemplo | Descrição |
 |---|---|---|
-| `VITE_API_BASE_URL` | `https://api.exemplo/api/v1/sigtap` | base da API |
-| `VITE_DEV_API_PROXY` | `http://localhost:8000` | alvo do proxy em dev |
+| `VITE_API_BASE_URL` | `https://api.exemplo/api/v1/sigtap` | URL base da API |
+| `VITE_DEV_API_PROXY` | `http://localhost:8000` | Alvo do proxy em desenvolvimento |
 
-## Arquitetura
+> Em desenvolvimento, `VITE_API_BASE_URL=/api/v1/sigtap` usa o proxy do Vite que encaminha `/api` para `VITE_DEV_API_PROXY` (default `http://localhost:8000`). Em produção, aponte `VITE_API_BASE_URL` para a URL absoluta da API.
+
+## 📁 Estrutura do projeto
 
 ```
 src/
-├── api/         client (fetch), types (corrigidos), endpoints, queries (React Query)
-├── app/         providers (Query/Theme/Competência), router, layout (shell/sidebar/header)
-├── components/  ui/ (primitivos), data-table/, filters/, common/
-├── features/    procedimentos/ (lista, detalhe + 16 abas), reversas/, dicionarios/ (config-driven), home/
-├── hooks/       useCompetencia, useTheme, useDebouncedValue, useListUrlState
-└── lib/         format (BRL/idade/competência), labels (TP_* — Anexo C), url, utils
+├── api/           # Client (fetch), types, endpoints e queries (React Query)
+├── app/           # Providers, router e layout (shell, sidebar, header)
+├── components/    # ui/ (primitivos), data-table/, filters/, common/
+├── features/      # Módulos de funcionalidade (procedimentos, reversas, dicionários, home)
+├── hooks/         # Hooks customizados (useCompetencia, useTheme, useDebouncedValue, etc.)
+└── lib/           # Utilitários de formatação, labels, URL e helpers
 ```
 
-Pontos de destaque:
+## 🏗️ Funcionalidades principais
 
-- **Estado de consulta na URL** (`useSearchParams`) → filtros/página/ordenação são
-  compartilháveis e sobrevivem a refresh/voltar.
-- **Competência global** (`CompetenciaProvider`): default = vigente, persistida em
-  `localStorage` e sincronizada com `?competencia=`. Recursos versionados injetam a
-  competência na queryKey, então trocá-la recarrega tudo.
-- **Dicionários config-driven**: um único par `DictionaryList`/`DictionaryDetail`
-  cobre todos os recursos via [`features/dicionarios/registry.ts`](src/features/dicionarios/registry.ts).
-- **Detalhe do procedimento**: 16 abas de relação carregadas **sob demanda**; badges de
-  contagem por aba e abas vazias desabilitadas.
+- **Estado de consulta na URL** — filtros, paginação e ordenação são compartilháveis e sobrevivem a refresh/navegação.
+- **Competência global** — default = vigente, persistida em `localStorage` e sincronizada com a URL. Trocar a competência recarrega automaticamente os dados.
+- **Dicionários config-driven** — um único par de componentes cobre todos os recursos de dicionário via registro centralizado.
+- **Detalhe de procedimento** — 16 abas de relação carregadas sob demanda, com badges de contagem e abas vazias desabilitadas.
+- **Tema claro/escuro** — toggle com persistência em `localStorage` (padrão: tema claro).
+- **Acessibilidade** — tabelas semânticas, foco visível, navegação por teclado e suporte a `prefers-reduced-motion`.
 
-## Tratamento dos 3 descompasses do OpenAPI (PRD §5)
+## 📝 Notas
 
-O OpenAPI gerado diverge do runtime em três pontos; os tipos em
-[`src/api/types.ts`](src/api/types.ts) seguem o **comportamento real**:
-
-1. **§5.2** Toda lista paginada inclui `competencia` (ausente no YAML) → `Paginated<T>`.
-2. **§5.3** As sub-rotas de procedimento (`/cids/`, `/ocupacoes/`, …) retornam **lista
-   paginada**, não objeto único.
-3. **§5.6** Dicionários compostos (`subgrupos`, `formas-organizacao`,
-   `servico-classificacoes`, `sia-sih`) não expõem `id` na lista → **sem página de
-   detalhe**, apenas lista com filtros.
-
-## Notas
-
-- A API é **pública e somente-leitura**: nenhuma chamada de escrita, nenhum header
-  `Authorization`. O ponto único para futura autenticação é
-  [`src/api/client.ts`](src/api/client.ts) (PRD §13).
-- Códigos preservam zeros à esquerda (strings); moeda/idade formatadas em pt-BR via `Intl`.
-- Acessibilidade: tabelas semânticas (`scope`/`aria-sort`), foco visível, navegação por
-  teclado, dark mode e `prefers-reduced-motion`.
-
-> Testes automatizados (Vitest/RTL/Playwright) e geração de tipos via
-> `openapi-typescript` estão previstos no PRD (fase 6) e ainda não foram adicionados —
-> os tipos da API hoje são mantidos à mão em `src/api/types.ts` (com as 3 correções).
+- A API é **pública e somente-leitura** — nenhuma chamada de escrita ou header de autenticação.
+- Códigos preservam zeros à esquerda (strings); moeda e idade são formatadas em pt-BR via `Intl`.
+- Os tipos da API são mantidos manualmente em `src/api/types.ts`.
