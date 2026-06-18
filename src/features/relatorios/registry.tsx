@@ -103,7 +103,7 @@ export interface RelatorioConfig {
 
 // ── Helpers de coluna (sentido direto) ───────────────────────────────────────
 const nameCell = (text: string | undefined) => (
-  <span title={text} className="block max-w-[24rem] truncate">
+  <span title={text} className="block max-w-[24rem]">
     {text ?? "—"}
   </span>
 );
