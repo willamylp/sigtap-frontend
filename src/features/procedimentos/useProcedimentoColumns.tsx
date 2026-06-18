@@ -52,7 +52,7 @@ export function useProcedimentoColumns(): ColumnDef<ProcedimentoList>[] {
         header: "Procedimento",
         cell: ({ row }) => (
           <SimpleTooltip content={row.original.no_procedimento}>
-            <span className="block max-w-[16rem] truncate sm:max-w-[28rem]">
+            <span className="block max-w-[16rem] sm:max-w-[28rem]">
               {row.original.no_procedimento}
             </span>
           </SimpleTooltip>

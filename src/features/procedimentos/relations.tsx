@@ -48,7 +48,7 @@ export interface RelationTabDef {
 }
 
 const nameCell = (text: string | undefined) => (
-  <span title={text} className="block max-w-[20rem] truncate">
+  <span title={text} className="block max-w-[20rem]">
     {text ?? "—"}
   </span>
 );
