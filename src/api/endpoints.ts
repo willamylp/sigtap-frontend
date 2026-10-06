@@ -5,6 +5,7 @@
  * `competencia` é apenas mais um query param; quem injeta a competência global
  * é a camada de hooks (queries.ts) a partir do CompetenciaProvider.
  */
+import { unmaskCode } from "@/lib/format";
 import { apiGet, type QueryParams } from "./client";
 import type {
   BaseListParams,
@@ -68,13 +69,21 @@ function retrieve<T>(path: string, signal?: AbortSignal): Promise<T> {
   return apiGet<T>(path, undefined, signal);
 }
 
+/**
+ * A busca de procedimentos aceita o código com máscara ("08.02.01.001-6"); a
+ * API só casa com os dígitos ("0802010016").
+ */
+function unmaskSearch(p?: BaseListParams): BaseListParams | undefined {
+  return p?.search ? { ...p, search: unmaskCode(p.search) } : p;
+}
+
 // ── Competências ─────────────────────────────────────────────────────────────
 export const getCompetencias = (p?: BaseListParams, s?: AbortSignal) =>
   list<Competencia>("/competencias/", p, s);
 
 // ── Procedimentos ────────────────────────────────────────────────────────────
 export const getProcedimentos = (p: ProcedimentoFiltros, s?: AbortSignal) =>
-  list<ProcedimentoList>("/procedimentos/", p, s);
+  list<ProcedimentoList>("/procedimentos/", unmaskSearch(p), s);
 
 export const getProcedimento = (co: string, competencia?: string, s?: AbortSignal) =>
   apiGet<ProcedimentoDetail>(
@@ -140,19 +149,19 @@ export const getProcTuss = (co: string, p?: RelParams, s?: AbortSignal) =>
 
 // ── Consultas reversas (→ ProcedimentoList) ──────────────────────────────────
 export const getProcedimentosPorCid = (co: string, p?: BaseListParams, s?: AbortSignal) =>
-  list<ProcedimentoList>(`/cids/${enc(co)}/procedimentos/`, p, s);
+  list<ProcedimentoList>(`/cids/${enc(co)}/procedimentos/`, unmaskSearch(p), s);
 
 export const getProcedimentosPorOcupacao = (co: string, p?: BaseListParams, s?: AbortSignal) =>
-  list<ProcedimentoList>(`/ocupacoes/${enc(co)}/procedimentos/`, p, s);
+  list<ProcedimentoList>(`/ocupacoes/${enc(co)}/procedimentos/`, unmaskSearch(p), s);
 
 export const getProcedimentosPorModalidade = (co: string, p?: BaseListParams, s?: AbortSignal) =>
-  list<ProcedimentoList>(`/modalidades/${enc(co)}/procedimentos/`, p, s);
+  list<ProcedimentoList>(`/modalidades/${enc(co)}/procedimentos/`, unmaskSearch(p), s);
 
 export const getProcedimentosPorServico = (co: string, p?: BaseListParams, s?: AbortSignal) =>
-  list<ProcedimentoList>(`/servicos/${enc(co)}/procedimentos/`, p, s);
+  list<ProcedimentoList>(`/servicos/${enc(co)}/procedimentos/`, unmaskSearch(p), s);
 
 export const getProcedimentosPorHabilitacao = (co: string, p?: BaseListParams, s?: AbortSignal) =>
-  list<ProcedimentoList>(`/habilitacoes/${enc(co)}/procedimentos/`, p, s);
+  list<ProcedimentoList>(`/habilitacoes/${enc(co)}/procedimentos/`, unmaskSearch(p), s);
 
 // ── Hierarquia (cascata) ─────────────────────────────────────────────────────
 export const getGrupos = (p?: BaseListParams, s?: AbortSignal) =>

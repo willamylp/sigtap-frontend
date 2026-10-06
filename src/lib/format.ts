@@ -117,3 +117,13 @@ export function truncate(text: string, max = 80): string {
   if (text.length <= max) return text;
   return `${text.slice(0, max - 1)}…`;
 }
+
+/**
+ * Remove a máscara de um código: "08.02.01.001-6" → "0802010016".
+ * Só age quando o texto tem apenas dígitos e separadores (`.`, `-`, espaços);
+ * qualquer outro texto (ex.: um nome) volta intacto.
+ */
+export function unmaskCode(value: string): string {
+  const digits = value.replace(/[.\-\s]/g, "");
+  return /^\d+$/.test(digits) ? digits : value;
+}
